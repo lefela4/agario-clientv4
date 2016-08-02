@@ -31,6 +31,7 @@ function Client(client_name) {
     this.auth_provider     = 1;    //auth provider. 1 = facebook, 2 = google
     this.spawn_attempt     = 0;    //attempt to spawn
     this.spawn_interval_id = 0;    //ID of setInterval()
+    this.key               = 0;    //encryption key
 }
 
 Client.prototype = {
@@ -257,22 +258,27 @@ Client.prototype = {
                 coordinate_x = packet.readSInt32LE();
                 coordinate_y = packet.readSInt32LE();
                 size = packet.readSInt16LE();
-
+               
+               var opt = packet.readUInt8();
+             
+               if (opt & 2) { // color
                 var color_R = packet.readUInt8();
                 var color_G = packet.readUInt8();
                 var color_B = packet.readUInt8();
 
                 color = (color_R << 16 | color_G << 8 | color_B).toString(16);
                 color = '#' + ('000000' + color).substr(-6);
-
-                var opt = packet.readUInt8();
+                }
+                
                 is_virus = !!(opt & 1);
                 var something_1 = !!(opt & 16); //TODO what is this?
 
-                //reserved for future use?
+                /* Was reserved for future use? Now if this flag is not set, color data is missing.
                 if (opt & 2) {
                     packet.offset += packet.readUInt32LE();
                 }
+                */
+                
                 if (opt & 4) {
                     var something_2 = ''; //TODO something related to premium skins
                     while(1) {
@@ -283,13 +289,14 @@ Client.prototype = {
                     }
                 }
 
+                if (opt & 8) {
                 while(1) {
                     char = packet.readUInt16LE();
                     if(char == 0) break;
                     if(!nick) nick = '';
                     nick += String.fromCharCode(char);
                 }
-
+                }
                 var ball = client.balls[ball_id] || new Ball(client, ball_id);
                 ball.color = color;
                 ball.virus = is_virus;
@@ -487,6 +494,10 @@ Client.prototype = {
             processor(client, packet);
         },
 
+       '241': function(client , packet) { // get encryption key
+            this.key = packet.readUInt32LE();
+       },
+       
         //somebody won, end of the game (server restart)
         '254': function(client) {
             if(client.debug >= 1)
