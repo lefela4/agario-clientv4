@@ -1,11 +1,8 @@
 # agario-client #
-Node.js client for [agar.io](http://agar.io) with API.
+Agar.io protocol 8. Main use is for minion bots.
 
-# Outdated! #
-Agar developers made completely new code for game. Now code runs inside virtual machine that I can not reverse-engineer due to lack of knowledge and experience. 
-Unfortunately its time to say goodbye to `agario-client`. 
-Initial idea of `agario-client` was for me to learn websockets, binary protocols, reverse-engineering, github and have fun overall. I believe that I achieved all that. 
-Thanks to all, it was great time!
+# Not finished! #
+Agar developers made completely new code for game. Now code runs inside virtual machine that will take time to reverse engineer and make a client for it.
 
 ## Instructions ##
 - Install [Node.js](https://nodejs.org/)
