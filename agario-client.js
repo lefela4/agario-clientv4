@@ -222,6 +222,7 @@ Client.prototype = {
     },
 
     processors: {
+    	//TODO: All strings have to be read in UTF-8 instead of UTF-16.
         //tick
         '16': function(client, packet) {
             var eaters_count = packet.readUInt16LE();
