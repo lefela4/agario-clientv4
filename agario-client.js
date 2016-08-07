@@ -292,10 +292,31 @@ Client.prototype = {
 
                 if (opt & 8) {
                 while(1) {
-                    char = packet.readUInt16LE();
+                    char = packet.readUInt8();
                     if(char == 0) break;
                     if(!nick) nick = '';
+                    if(char<192){
                     nick += String.fromCharCode(char);
+                    }else{
+                    	if(char<224){
+                    	var _1 = packet.readUInt8() % 64;
+                    	nick += String.fromCharCode((char % 32) * 64 + _1);	
+                    	}else{
+                    	if(char<240){
+                    	var _1 = (packet.readUInt8() % 64) * 64;
+                    	var _2 = packet.readUInt8() % 64;
+                    	nick += String.fromCharCode((char % 16) * 4096 + _1 + _2);		
+                    	}else{
+                    	var _1 = (packet.readUInt8() % 64) * 4096;
+                        var _2 = (packet.readUInt8() % 64) * 64;
+                    	var _3 = packet.readUInt8() % 64;
+                    	var c = (char % 8) * 262144 + _1 + _2 + _3;
+                    	nick += String.fromCharCode((c-65536)/1024+55296);
+                    	nick += String.fromCharCode((c-65536)%1024+56320);
+                    	}
+                    	}
+                    }
+                    
                 }
                 }
                 var ball = client.balls[ball_id] || new Ball(client, ball_id);
@@ -396,9 +417,30 @@ Client.prototype = {
 
                 var name = '';
                 while(1) {
-                    var char = packet.readUInt16LE();
+                char = packet.readUInt8();
                     if(char == 0) break;
-                    name += String.fromCharCode(char);
+                    if(!nick) nick = '';
+                    if(char<192){
+                    nick += String.fromCharCode(char);
+                    }else{
+                    	if(char<224){
+                    	var _1 = packet.readUInt8() % 64;
+                    	nick += String.fromCharCode((char % 32) * 64 + _1);	
+                    	}else{
+                    	if(char<240){
+                    	var _1 = (packet.readUInt8() % 64) * 64;
+                    	var _2 = packet.readUInt8() % 64;
+                    	nick += String.fromCharCode((char % 16) * 4096 + _1 + _2);		
+                    	}else{
+                    	var _1 = (packet.readUInt8() % 64) * 4096;
+                        var _2 = (packet.readUInt8() % 64) * 64;
+                    	var _3 = packet.readUInt8() % 64;
+                    	var c = (char % 8) * 262144 + _1 + _2 + _3;
+                    	nick += String.fromCharCode((c-65536)/1024+55296);
+                    	nick += String.fromCharCode((c-65536)%1024+56320);
+                    	}
+                    	}
+                    }
                 }
 
                 highlights.push(highlight);
@@ -556,7 +598,7 @@ Client.prototype = {
                 this.log('[warning] spawn() was called when connection was not established, packet will be dropped');
             return false;
         }
-
+       
         var buf = new Buffer(1 + 2*name.length);
         buf.writeUInt8(0, 0);
         for (var i=0;i<name.length;i++) {
