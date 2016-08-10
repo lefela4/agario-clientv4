@@ -1,6 +1,14 @@
 //this file is for internal use with packets
 
-function Packet(e) {
+function Packet(e, key) {
+    this.key=key;
+    this.keyBytes=[
+        key & 255,
+        key >>> 8 & 255,
+        key >>> 16 & 255,
+        key >>> 24 & 255
+        ]
+    this.offset = 0;
     if(e instanceof Buffer) {
         this.data   = e;
         this.length = this.data.length;
@@ -11,8 +19,11 @@ function Packet(e) {
         this.data   = new DataView(e.data);
         this.length = this.data.byteLength;
     }
-
-    this.offset = 0;
+    for(var i=0;i<this.length;i++){ // decrypt/encrypt
+            var b = this.readUInt8(i);
+            b=b^keyBytes[i % 4];
+            this.writeUInt8(b,i);
+        }
 }
 
 Packet.prototype = {
@@ -23,6 +34,18 @@ Packet.prototype = {
             ret = this.data.getUint8(offset);
         }else{
             ret = this.data.readUInt8(offset);
+        }
+        if(p === undefined) this.offset += 1;
+
+        return ret;
+    },
+    writeUInt8: function(o,p) {
+        var offset = (typeof p) == 'number' ? p : this.offset;
+        var ret;
+        if(this.data.setUint8) {
+            ret = this.data.setUint8(offset,o);
+        }else{
+            ret = this.data.writeUInt8(o,offset);
         }
         if(p === undefined) this.offset += 1;
 
