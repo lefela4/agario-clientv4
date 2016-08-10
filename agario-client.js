@@ -31,7 +31,8 @@ function Client(client_name) {
     this.auth_provider     = 1;    //auth provider. 1 = facebook, 2 = google
     this.spawn_attempt     = 0;    //attempt to spawn
     this.spawn_interval_id = 0;    //ID of setInterval()
-    this.key               = 0;    //encryption key
+    this.key               = 0;    //encryption key (sending packets)
+    this.decryptionKey     = 0;    //decryption key (receiving packets)
 }
 
 Client.prototype = {
@@ -367,6 +368,11 @@ Client.prototype = {
 
         '18': function() {
             for(var k in this.balls) if(this.balls.hasOwnProperty(k)) this.balls[k].destroy({'reason':'server-forced'});
+            // Reset encryption key (from agario.core.js)
+            this.key = Math.imul(this.key, 1540483477) >> 0;
+            this.key = (Math.imul(this.key >>> 24 ^ this.key, 1540483477) >> 0) ^ 114296087;
+            this.key = Math.imul(this.key >>> 13 ^ this.key, 1540483477) >> 0;
+            this.key = this.key >>> 15 ^ this.key;
         },
 
         '20': function() {
@@ -538,7 +544,7 @@ Client.prototype = {
         },
 
        '241': function(client , packet) { // get encryption key
-            this.key = packet.readUInt32LE();
+            this.decryptionKey = packet.readUInt32LE();
        },
        
         //somebody won, end of the game (server restart)
