@@ -20,19 +20,19 @@ function Client(client_name) {
 
     //don't change things below if you don't understand what you're doing
 
-    this.tick_counter      = 0;    //number of ticks (packet ID 16 counter)
-    this.inactive_interval = 0;    //ID of setInterval()
-    this.balls             = {};   //all balls
-    this.my_balls          = [];   //IDs of my balls
-    this.score             = 0;    //my score
-    this.leaders           = [];   //IDs of leaders in FFA mode
-    this.teams_scores      = [];   //scores of teams in Teams mode
-    this.auth_token        = '';   //auth token. Check README.md for how to get it
-    this.auth_provider     = 1;    //auth provider. 1 = facebook, 2 = google
-    this.spawn_attempt     = 0;    //attempt to spawn
-    this.spawn_interval_id = 0;    //ID of setInterval()
-    this.key               = 0;    //encryption key (sending packets)
-    this.decryptionKey     = 0;    //decryption key (receiving packets)
+    this.tick_counter      = 0;        //number of ticks (packet ID 16 counter)
+    this.inactive_interval = 0;        //ID of setInterval()
+    this.balls             = {};       //all balls
+    this.my_balls          = [];       //IDs of my balls
+    this.score             = 0;        //my score
+    this.leaders           = [];       //IDs of leaders in FFA mode
+    this.teams_scores      = [];       //scores of teams in Teams mode
+    this.auth_token        = '';       //auth token. Check README.md for how to get it
+    this.auth_provider     = 1;        //auth provider. 1 = facebook, 2 = google
+    this.spawn_attempt     = 0;        //attempt to spawn
+    this.spawn_interval_id = 0;        //ID of setInterval()
+    this.key               = 672720360;//Encryption key (sending packets). First value(28282828 hex)
+    this.decryptionKey     = 0;        //Decryption key (receiving packets)
 }
 
 Client.prototype = {
@@ -50,7 +50,6 @@ Client.prototype = {
         this.ws.onclose    = this.onDisconnect.bind(this);
         this.ws.onerror    = this.onError.bind(this);
         this.server        = server;
-        this.key           = key;
 
         if(this.debug >= 1) {
             if(!key) this.log('[warning] You did not specified "key" for Client.connect(server, key)\n' +
@@ -88,7 +87,7 @@ Client.prototype = {
         buf.writeUInt32LE(5, 1);
 
         if(this.ws.readyState !== WebSocket.OPEN) { //`ws` bug https://github.com/websockets/ws/issues/669 `Crash 2`
-            this.onPacketError(new Packet(buf), new Error('ws bug #669:crash2 detected, `onopen` called with not established connection'));
+            this.onPacketError(new Packet(buf, this.key), new Error('ws bug #669:crash2 detected, `onopen` called with not established connection'));
             return;
         }
 
@@ -99,7 +98,7 @@ Client.prototype = {
         buf.writeUInt32LE(154669603, 1);
         this.send(buf);
 
-        if(this.key) {
+        /*if(this.key) { Doesn't work anymore
             buf = new Buffer(1 + this.key.length);
             buf.writeUInt8(80, 0);
             for (var i=1;i<=this.key.length;++i) {
@@ -117,7 +116,7 @@ Client.prototype = {
 				buf.writeUInt8(bytes[i], i);
             }
             this.send(buf);
-        }
+        }*/
 
         client.emitEvent('connected');
     },
@@ -139,7 +138,7 @@ Client.prototype = {
     },
 
     onMessage: function(e) {
-        var packet    = new Packet(e);
+        var packet    = new Packet(e, this.decryptionKey);
         if(!packet.length) {
             return this.onPacketError(packet, new Error('Empty packet received'));
         }
@@ -182,7 +181,7 @@ Client.prototype = {
             this.log('SEND packet ID=' + buf.readUInt8(0) + ' LEN=' + buf.length);
 
         if(this.debug >= 5)
-            this.log('dump: ' + (new Packet(buf).toString()));
+            this.log('dump: ' + (new Packet(buf, this.key).toString()));
 
         this.ws.send(buf);
     },
