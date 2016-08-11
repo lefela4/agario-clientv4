@@ -1,3 +1,17 @@
+## 11.08.2016 ##
+So far, these things are done:
+- Support for encryption keys
+- Use UTF-8 instead of UTF-16(only when receiving packets) Nickname packet isn't fixed yet.
+- Decrypt incoming packets
+- (Partially) Encrypt outgoing packets(code from agario.core.js)
+TODO:
+- Add the code for second encryption key - I'm currently breaking my head (not physically, of course :D ) to find it. I'm sure that outgoing messages are encrypted by two keys, the first one changing after every clear cells packet, and the second one every message, yet I can't find the code that changes it.
+- When receiving the encryption key, XOR it with the client version number (packet 255 that is sent to the server) I don't know how it changes after clear cells packet.
+- Change incoming packet key after each clear cells packet
+
+## 02.08.2016 ##
+I will attempt to make agario-client work again! How long will it take, I don't know.
+
 ## 07.05.2016 ##
 Agar developers made completely new code for game. Now code runs inside virtual machine that I can not reverse-engineer due to lack of knowledge and experience. 
 Unfortunately its time to say goodbye to `agario-client`. 
