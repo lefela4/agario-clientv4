@@ -1,5 +1,11 @@
-# agario-client #
-Agar.io protocol 8. Main use is for minion bots.
+# Agario-client v4 #
+Agar.io protocol 11. Main use is for minion bots.
+
+# Minion is coming back ! #
+I am taking back the agar.io bots. My mission is to bring them back whit the protocol. I am sorry but I will encrypt everything on those files because I dont want to be copided. Also I dont want the other know the secret of the agar protocol because I respect agar.io and dont want them to lose their secret.
+
+--lefela4
+
 
 # Not finished! #
 Agar developers made completely new code for game. Now code runs inside virtual machine that will take time to reverse engineer and make a client for it.
