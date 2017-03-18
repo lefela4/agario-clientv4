@@ -10,6 +10,32 @@ I am taking back the agar.io bots. My mission is to bring them back whit the pro
 # Not finished! #
 Agar developers made completely new code for game. Now code runs inside virtual machine that will take time to reverse engineer and make a client for it.
 
+# Protocol v11
+## Protocol documentary & Information
+
+<p> 
+<b>
+
+<br> ** Please read the <i> PROTOCOL.MD </i> for the documentation ** 
+<br> ** Interresing to join us ? **
+<br> ** Read the Developper section in <i> About </i> at the bottom ! **
+<br> ** Some mods are disponible read below. **  
+
+</b>
+</p>
+## CMD
+
+<br> New cool desing done !
+
+![CMD](https://raw.githubusercontent.com/lefela4/Agar.io-client-v3/master/img/cmd.png)
+
+## UserScript
+
+<br> You need to install Tampermonkey
+<br> Put agario.user.js in Tampermonkey
+<br> Change your UUID
+<br> Go agar.io and you have done !
+
 ## Instructions ##
 - Install [Node.js](https://nodejs.org/)
 - Install client using `npm install agario-client` (ignore `python` errors)
@@ -265,6 +291,32 @@ Check full example in `examples/basic.js`
 
 ## Feedback ##
 If something is broken, please [email me](mailto:pulviscriptor@gmail.com) or [create issue](https://github.com/pulviscriptor/agario-client/issues/new). I will not know that something is broken until somebody will tell me that.
+# About
+## Developper
+
+<b> We are presentely looking for developpers. </b>
+
+To join us you need to :
+
+- Know the Javascript
+- Know buffer / ArrayBuffer
+- Have free time
+
+## How to join us
+
+<br> If you want to join us you need to send me an email or contact me on skype:
+<br> The firend requess contant need to be :
+
+<br> Hey, I want to join your team + what you can do for help us
+
+<b> <i> *** By joining us you can make money, this is not a job yet so you are not paid for your work at the start. But went we will get working bots whit no bugs, I will contact all team members and paid them for their work. *** </i> </b>
+
+
+## Thanks to
+
+<br> Special tnx for ogar server !
+<br> Special tnx for Sonic for a little fix !
+<br> Special tnx for NulearC for the fix of the first bytes !
 
 ## License ##
 MIT
